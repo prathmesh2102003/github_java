@@ -1,0 +1,50 @@
+# This workflow will build a package using Maven and then publish it to GitHub packages when a release is created
+# For more information see: https://github.com/actions/setup-java/blob/main/docs/advanced-usage.md#apache-maven-with-a-settings-path
+name: Java CI/CD Pipeline
+
+# Trigger the pipeline on push or pull request to the main branch
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    # Checkout the code from the repository
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    # Set up the Java Development Kit (JDK) for building the project
+    - name: Set up JDK 11
+      uses: actions/setup-java@v1
+      with:
+        java-version: '11'
+
+    # Build the Maven project
+    - name: Build with Maven
+      run: mvn -B package --file pom.xml
+
+    # Run tests using Maven
+    - name: Run tests
+      run: mvn test
+
+  # Optional deployment job (if you want to deploy your app)
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Deploy application
+      run: echo "Deploying to production..."
+      # You can replace this echo statement with actual deployment steps
+      # For example, using AWS CLI to upload to S3 or trigger deployment on AWS services
+      # aws s3 cp target/my-app.jar s3://your-bucket/
+
